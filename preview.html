@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>임상교육 자가 문진 앱</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1e3a8a">
+
+<style>
+body { font-family: sans-serif; background:#f1f5f9; padding:15px; }
+.card {
+  background:white; padding:15px; margin-bottom:15px;
+  border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+h2 { color:#1e3a8a; }
+textarea, input {
+  width:100%; margin-top:5px; margin-bottom:10px;
+}
+button {
+  width:100%; padding:12px; background:#1e3a8a;
+  color:white; border:none; border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>임상 문진 & 추론 훈련</h2>
+
+<div class="card">
+<h3>1. Subjective (S)</h3>
+<textarea id="subjective" placeholder="주호소 및 병력"></textarea>
+</div>
+
+<div class="card">
+<h3>2. Objective (O)</h3>
+<label>체온</label>
+<input id="temp" type="number" step="0.1">
+
+<label>혈압</label>
+<input id="bp" placeholder="예: 120/80">
+
+<label>심박수</label>
+<input id="hr" type="number">
+</div>
+
+<div class="card">
+<h3>3. Assessment (A)</h3>
+<textarea id="assessment" placeholder="가능한 진단"></textarea>
+
+<label>감별진단 3개 이상</label>
+<textarea id="ddx"></textarea>
+
+<label>Clinical reasoning</label>
+<textarea id="reasoning"></textarea>
+</div>
+
+<div class="card">
+<h3>4. Plan (P)</h3>
+<textarea id="plan"></textarea>
+</div>
+
+<button onclick="generateReport()">요약 생성</button>
+
+<div class="card" id="result" style="display:none;">
+<h3>📄 자동 요약</h3>
+<p id="summary"></p>
+</div>
+
+<script>
+function generateReport() {
+
+  const data = {
+    S: document.getElementById("subjective").value,
+    O: {
+      temp: document.getElementById("temp").value,
+      bp: document.getElementById("bp").value,
+      hr: document.getElementById("hr").value
+    },
+    A: document.getElementById("assessment").value,
+    ddx: document.getElementById("ddx").value,
+    reasoning: document.getElementById("reasoning").value,
+    P: document.getElementById("plan").value
+  };
+
+  localStorage.setItem("clinicalCase", JSON.stringify(data));
+
+  const summary = `
+  <b>S:</b> ${data.S}<br><br>
+  <b>O:</b> 체온 ${data.O.temp}, BP ${data.O.bp}, HR ${data.O.hr}<br><br>
+  <b>A:</b> ${data.A}<br>
+  <b>DDx:</b> ${data.ddx}<br><br>
+  <b>Reasoning:</b> ${data.reasoning}<br><br>
+  <b>P:</b> ${data.P}
+  `;
+
+  document.getElementById("summary").innerHTML = summary;
+  document.getElementById("result").style.display = "block";
+}
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
+</script>
+
+</body>
+</html>

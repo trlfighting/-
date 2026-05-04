@@ -1,0 +1,15 @@
+{
+  "name": "임상교육 문진 앱",
+  "short_name": "임상훈련",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#1e3a8a",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
